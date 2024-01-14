@@ -9,7 +9,7 @@ using namespace std;
 
 int main()
 {
-cout << "hello Alex !!!" << endl;
+cout << "hello Alex !!!";
 
 
     return 0;
