@@ -16,11 +16,19 @@ class OnlineShop
 
      if(shopDatabase.find(article) == shopDatabase.end() || quantity > shopDatabase[article])
      {
-       throw invalid_argument(shopDatabase.find(article) == shopDatabase.end() ? "product not found" : "there are not so many items in stock");
+       throw invalid_argument(shopDatabase.find(article) == shopDatabase.end() ? "product not found" : "there are not so many products in stock");
      }
 
         cart[article] +=  quantity;
+
+        shopDatabase[article] -= quantity;
+        if(shopDatabase[article] == 0)
+        {
+          shopDatabase.erase(article);
+        }
      }
+
+
 
     
      void removeFromcart(const string & article, int quantity)
@@ -31,6 +39,7 @@ class OnlineShop
        }
 
        cart[article] -=  quantity;
+       shopDatabase[article] += quantity;
 
           if (cart[article] == 0) {
             cart.erase(article);
@@ -60,9 +69,24 @@ int main()
   shop.shopDatabase["article7"] = 10;
   shop.shopDatabase["article9"] = 4;
 
-  try
+  string article;
+  int quantity = 0;
+
+  while(1)
   {
-     shop.addTocart("article1", 8);
+    string select;
+    cout << "select add or remove product: ";
+    cin >> select;
+
+    if(select == "add")
+    {
+      cout << "enter the article you want to add: ";
+      cin >> article;
+      cout << "enter the quantity you want to add: ";
+      cin >> quantity;
+       try
+  {
+     shop.addTocart(article, quantity);
   }
   
   catch(const std::invalid_argument& x)
@@ -70,11 +94,19 @@ int main()
     std::cerr << x.what() << '\n';
   }
 
+    }
+    
 
+    if(select == "remove")
+    {
+      cout << "enter the article you want to remove: ";
+      cin >> article;
+      cout << "enter the quantity you want to remove: ";
+      cin >> quantity;
 
-  try
+      try
   {
-     shop.removeFromcart("article1", 4);
+     shop.removeFromcart(article, quantity);
      
   }
   
@@ -82,11 +114,13 @@ int main()
   {
     std::cerr << x.what() << '\n';
   }
+    }
+
   
   shop.printCart();
 
-  
- 
+  }
 
+  
     return 0;
 }
